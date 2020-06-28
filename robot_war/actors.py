@@ -1,4 +1,5 @@
 import pygame
+import random
 from robot_war.game_utils import *
 
 class GameObject:
@@ -75,12 +76,18 @@ class Bullet(GameObject):
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)
 
 class Robot(GameObject):
-    def __init__(self, x=200, y=200, color=(255, 255, 0), width=100, height=100, bullet_color=(0,0,255)):
+    def __init__(self, x=200, y=200, color=(255, 255, 0), width=100, height=100, 
+    bullet_color=(0,0,255), lifebar_width=50, lifebar_height=5, lifebar_x_offset=8, lifebar_y_offset=8):
         super().__init__(x, y, color, width, height)
         self.bullet_color = bullet_color
+        self.life = 100
+        self.lifebar_width = lifebar_width
+        self.lifebar_height = lifebar_height
+        self.lifebar_x_offset = lifebar_x_offset
+        self.lifebar_y_offset = lifebar_y_offset
         self.surface = pygame.Surface((1.01*self.height, 1.01*self.width), pygame.SRCALPHA)
         self.initialize_body()
-        
+    
     def initialize_body(self):
         pygame.draw.line(self.surface, self.color, (0, self.height), (self.width // 2, 0))
         pygame.draw.line(self.surface, self.color, (self.width // 2, 0), (self.width, self.height))
@@ -93,6 +100,17 @@ class Robot(GameObject):
         new_rect = rotated_surface.get_rect(center = previous_center)
         screen.blit(rotated_surface, (self.x + new_rect.topleft[0], self.y + new_rect.topleft[1]))
 
+    def draw_lifebar(self, screen):
+        try:
+            x = self.x - self.lifebar_x_offset
+            y = self.y - self.lifebar_y_offset
+
+            width = self.life*self.lifebar_width/100.0
+            pygame.draw.rect(screen, (255, 0, 0), (x, y, width, self.lifebar_height), 0)
+        except:
+            pass
+
     def draw(self, screen):
         self.draw_body(screen)
+        self.draw_lifebar(screen)
 
