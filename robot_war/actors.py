@@ -1,38 +1,22 @@
 import pygame
 from robot_war.game_utils import *
 
-class Cursor:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        ObjectLoopFactory().get_looper().add(self)
-
-    def update(self):
-        self.x, self.y = pygame.mouse.get_pos()
-
-    def draw(self, screen):
-        pass
-
-
-class Robot:
-    def __init__(self, x=200, y=200, color=(255, 255, 0), width=100, height=100):
+class GameObject:
+    def __init__(self, x=0, y=0, color=(0, 0, 0), width=0, height=0):
         self.x = x
         self.y = y
+        self.color = color
+        self.width = width
+        self.height = height
+
         self.vx = 0
         self.vy = 0
         self.ax = 0
         self.ay = 0
 
-        self.settings = GameSettingsFactory().get_settings()
-
-        self.height = height
-        self.width = width
-        self.color = color
-        self.shooter_size = self.width // 3
         self.body_rotation = 0
-        self.shooter_rotation = 0
-        self.surface = pygame.Surface((1.01*self.height, 1.01*self.width), pygame.SRCALPHA)
-        self.initialize_body()
+
+        self.settings = GameSettingsFactory().get_settings()
         self.behaviors = []
         self.conditions = []
 
@@ -58,6 +42,28 @@ class Robot:
         self.x = self.x + self.vx*self.settings.dt
         self.y = self.y + self.vy*self.settings.dt
 
+
+class Cursor(GameObject):
+    def __init__(self):
+        super().__init__()
+
+    def update(self):
+        self.x, self.y = pygame.mouse.get_pos()
+
+    def draw(self, screen):
+        pass
+
+class Bullet:
+    def __init__(self, shooter):
+        self.shooter = shooter
+
+class Robot(GameObject):
+    def __init__(self, x=200, y=200, color=(255, 255, 0), width=100, height=100):
+        super().__init__(x, y, color, width, height)
+
+        self.surface = pygame.Surface((1.01*self.height, 1.01*self.width), pygame.SRCALPHA)
+        self.initialize_body()
+        
     def initialize_body(self):
         pygame.draw.line(self.surface, self.color, (0, self.height), (self.width // 2, 0))
         pygame.draw.line(self.surface, self.color, (self.width // 2, 0), (self.width, self.height))
