@@ -49,6 +49,8 @@ class Robot:
             condition = self.conditions[idx]
             if condition.apply():
                 behaviour.do()
+            else:
+                behaviour.clear()
 
         self.vx = self.vx + self.ax*self.settings.dt
         self.vy = self.vy + self.ay*self.settings.dt

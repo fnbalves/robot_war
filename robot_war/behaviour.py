@@ -29,8 +29,7 @@ class TooClose(Condition):
         x_diff = self.object.x - self.target.x
         y_diff = self.object.y - self.target.y
         dist = m.sqrt(x_diff**2 + y_diff**2)
-        print(dist)
-        
+
         return dist < self.radius
 
 class Behaviour:
@@ -44,6 +43,9 @@ class Behaviour:
     def do(self):
         pass
 
+    def clear(self):
+        pass
+    
 class PointBodyTo(Behaviour):
     def __init__(self, target):
         super().__init__()
@@ -60,8 +62,26 @@ class MoveForward(Behaviour):
     def __init__(self, speed):
         super().__init__()
         self.speed = speed
+        self.firt_rotation = None
 
     def do(self):
         radian_angle = m.pi*(self.object.body_rotation - 270)/180.0
         self.object.vx = self.speed*m.cos(radian_angle)
         self.object.vy = (-1)*self.speed*m.sin(radian_angle)
+
+class MoveSideways(Behaviour):
+    def __init__(self, speed):
+        super().__init__()
+        self.speed = speed
+        self.first_rotation = None
+
+    def do(self):
+        if self.first_rotation is None:
+            self.first_rotation = m.pi*(self.object.body_rotation - 270)/180.0
+        
+        radian_angle = self.first_rotation + m.pi/2
+        self.object.vx = self.speed*m.cos(radian_angle)
+        self.object.vy = (-1)*self.speed*m.sin(radian_angle)
+
+    def clear(self):
+        self.first_rotation = None
