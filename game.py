@@ -14,8 +14,8 @@ clock = pygame.time.Clock()
 updater = ObjectLoopFactory().get_looper()
 
 cursor = Cursor()
-shooter1 = Robot()
-shooter2 = Robot(x=500, y=500, color=(255, 0, 0))
+shooter1 = Robot(bullet_color=(0,0,255))
+shooter2 = Robot(x=500, y=500, color=(255, 0, 0), bullet_color=(0, 255, 255))
 
 shooter1.add_behaviour(Always(), PointBodyTo(shooter2))
 shooter1.add_behaviour(Always(), MoveForward(30))
@@ -24,6 +24,7 @@ shooter1.add_behaviour(TooClose(shooter2, 150), Shoot(50))
 
 shooter2.add_behaviour(Always(), PointBodyTo(shooter1))
 shooter2.add_behaviour(Always(), MoveForward(30))
+shooter2.add_behaviour(TooClose(shooter1, 150), Shoot(50))
 
 #Game loop
 while settings.active:

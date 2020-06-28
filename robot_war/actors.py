@@ -62,6 +62,15 @@ class Bullet(GameObject):
         self.body_rotation = self.shooter.body_rotation
         self.radius = radius
 
+    def update(self):
+        super().update()
+        if (self.x > self.settings.window_width) or \
+        (self.x < 0) or (self.y > self.settings.window_height) or \
+        (self.y < 0):
+            looper = ObjectLoopFactory().get_looper()
+            looper.drop_object(self)
+            del self
+
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)
 

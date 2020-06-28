@@ -46,6 +46,11 @@ class ObjectLooper:
             obj.update()
             obj.draw(self.settings.screen)
 
+    def drop_object(self, object):
+        matching_indexes = [idx for idx, o in enumerate(self.objects) if o == object]
+        for idx in matching_indexes:
+            del self.objects[idx]
+
 class ObjectLoopFactory:
     looper = None
     def __init__(self):
