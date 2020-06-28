@@ -20,6 +20,7 @@ shooter2 = Robot(x=500, y=500, color=(255, 0, 0))
 shooter1.add_behaviour(Always(), PointBodyTo(shooter2))
 shooter1.add_behaviour(Always(), MoveForward(30))
 shooter1.add_behaviour(TooClose(shooter2, 150), MoveSideways(50))
+shooter1.add_behaviour(TooClose(shooter2, 150), Shoot(50))
 
 shooter2.add_behaviour(Always(), PointBodyTo(shooter1))
 shooter2.add_behaviour(Always(), MoveForward(30))

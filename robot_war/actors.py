@@ -53,14 +53,22 @@ class Cursor(GameObject):
     def draw(self, screen):
         pass
 
-class Bullet:
-    def __init__(self, shooter):
+class Bullet(GameObject):
+    def __init__(self, shooter, radius=2, color=(0,0,255)):
+        super().__init__(color=color)
         self.shooter = shooter
+        self.x = self.shooter.x + (self.shooter.width // 2)
+        self.y = self.shooter.y + (self.shooter.height // 2)
+        self.body_rotation = self.shooter.body_rotation
+        self.radius = radius
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)
 
 class Robot(GameObject):
-    def __init__(self, x=200, y=200, color=(255, 255, 0), width=100, height=100):
+    def __init__(self, x=200, y=200, color=(255, 255, 0), width=100, height=100, bullet_color=(0,0,255)):
         super().__init__(x, y, color, width, height)
-
+        self.bullet_color = bullet_color
         self.surface = pygame.Surface((1.01*self.height, 1.01*self.width), pygame.SRCALPHA)
         self.initialize_body()
         

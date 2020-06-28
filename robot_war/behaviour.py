@@ -1,6 +1,8 @@
 import pygame
 import math as m
+from datetime import datetime
 from robot_war.game_utils import *
+from robot_war.actors import *
 
 class Condition:
     def __init__(self):
@@ -85,3 +87,16 @@ class MoveSideways(Behaviour):
 
     def clear(self):
         self.first_rotation = None
+
+class Shoot(Behaviour):
+    def __init__(self, cycles_interval):
+        super().__init__()
+        self.wait_time = cycles_interval*GameSettingsFactory().get_settings().dt
+        self.last_time_shoot = None
+
+    def do(self):
+        now_time = datetime.now()
+        if (self.last_time_shoot is None) or (now_time - self.last_time_shoot).total_seconds() > self.wait_time:
+            bullet = Bullet(self.object, color=self.object.bullet_color)
+            bullet.add_behaviour(Always(), MoveForward(60))
+            self.last_time_shoot = now_time
