@@ -62,6 +62,13 @@ class ObjectLoopFactory:
         return ObjectLoopFactory.looper
 
 class GameMath:
+
+    @staticmethod
+    def dist(obj1, obj2):
+        x_diff = obj2.x - obj1.x
+        y_diff = obj2.y - obj1.y
+        return m.sqrt(x_diff**2 + y_diff**2)
+
     @staticmethod
     def raw_angle(x1, y1, x2, y2):
         x_diff = x2 - x1

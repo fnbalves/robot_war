@@ -25,6 +25,7 @@ shooter1.add_behaviour(TooClose(shooter2, 150), Shoot(50))
 shooter2.add_behaviour(Always(), PointBodyTo(shooter1))
 shooter2.add_behaviour(Always(), MoveForward(30))
 shooter2.add_behaviour(TooClose(shooter1, 150), Shoot(50))
+shooter2.add_behaviour(TooClose(AnyBullet(), 150), MoveSideways(50))
 
 #Game loop
 while settings.active:

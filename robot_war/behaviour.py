@@ -21,6 +21,10 @@ class Always(Condition):
     def apply(self):
         return True
 
+class AnyBullet:
+    def __init__(self):
+        pass
+    
 class TooClose(Condition):
     def __init__(self, target, radius):
         super().__init__()
@@ -28,11 +32,16 @@ class TooClose(Condition):
         self.radius = radius
 
     def apply(self):
-        x_diff = self.object.x - self.target.x
-        y_diff = self.object.y - self.target.y
-        dist = m.sqrt(x_diff**2 + y_diff**2)
-
-        return dist < self.radius
+        if isinstance(self.target, AnyBullet):
+            looper = ObjectLoopFactory().get_looper()
+            bullets = [o for o in looper.objects if isinstance(o, Bullet)]
+            for b in bullets:
+                dist = GameMath.dist(b, self.object)
+                if dist < self.radius:
+                    return True
+            return False
+        else:
+            return GameMath.dist(self.object, self.target) < self.radius
 
 class Behaviour:
     def __init__(self):
