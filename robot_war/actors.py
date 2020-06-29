@@ -89,6 +89,7 @@ class Robot(GameObject):
         self.initialize_body()
     
     def initialize_body(self):
+        pygame.draw.rect(self.surface, self.color, (0, 0, self.width, self.height), 1)
         pygame.draw.line(self.surface, self.color, (0, self.height), (self.width // 2, 0))
         pygame.draw.line(self.surface, self.color, (self.width // 2, 0), (self.width, self.height))
         pygame.draw.line(self.surface, self.color, (self.width, self.height), (0, self.height))
