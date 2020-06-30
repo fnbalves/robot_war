@@ -43,6 +43,39 @@ class TooClose(Condition):
         else:
             return GameMath.dist(self.object, self.target) < self.radius
 
+class CollidesWith(Condition):
+    def __init__(self, target):
+        super().__init__()
+        self.target = target
+        self.still_collided = False
+
+    @staticmethod
+    def have_collision(object1, object2):
+        if pygame.sprite.collide_rect(object1, object2):
+            offset = (int(object2.mask_x - object1.mask_x), int(object2.mask_y - object1.mask_y))
+            if object1.mask.overlap(object2.mask, offset) is not None:
+                return True
+        return False
+
+    def apply(self):
+        if isinstance(self.target, AnyBullet):
+            looper = ObjectLoopFactory().get_looper()
+            bullets = [o for o in looper.objects if isinstance(o, Bullet)]
+            for b in bullets:
+                has_c = CollidesWith.have_collision(self.object, b)
+                if has_c and b.shooter != self.object:
+                    looper.drop_object(b)
+                    return True
+            return False
+        else:
+            has_c = CollidesWith.have_collision(self.object, self.target)
+            if has_c and not self.still_collided:
+                self.still_collided = True
+                return True
+            elif not has_c:
+                self.still_collided = False
+            return False
+
 class Behaviour:
     def __init__(self):
         self.object = None
@@ -109,3 +142,14 @@ class Shoot(Behaviour):
             bullet = Bullet(self.object, color=self.object.bullet_color)
             bullet.add_behaviour(Always(), MoveForward(60))
             self.last_time_shoot = now_time
+
+class TakeDamage(Behaviour):
+    def __init__(self, damage):
+        super().__init__()
+        self.damage = damage
+    
+    def do(self):
+        if self.object.life > 0:
+            self.object.life -= self.damage
+        else:
+            self.object.life = 0
